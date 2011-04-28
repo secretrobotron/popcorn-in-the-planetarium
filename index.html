@@ -34,12 +34,20 @@
       $(document).ready( function (e) {
         var $iframePlanetarium = $('#iframe-planetarium');
         var $iframeKhanVideo = $('#iframe-khan-video');
+        var planets = {};
 
         function planetariumLoaded (event) {
           if (event.data === 'loaded') {
             var planetariumWin = $iframePlanetarium[0].contentWindow;
             planetariumWin.postMessage('start_demo', '*');
             window.removeEventListener('message', planetariumLoaded, false);
+
+            var $planetLinks = $iframePlanetarium.contents().find('li.planet');
+            for (var i=0; i<$planetLinks.length; ++i) {
+              var li = $planetLinks[i];
+              planets[li.id] = li;
+            } //for
+
           } //if
         } //planetariumLoaded
 
@@ -50,6 +58,6 @@
   </head>
   <body>
     <iframe id="iframe-planetarium" width="100%" height="100%" src="planetarium/demo.html" frameborder="0"></iframe>
-    <iframe id="iframe-khan-video" width="640" height="390" src="http://www.youtube.com/embed/GP53b__h4ew" frameborder="0" allowfullscreen></iframe>
+    <iframe id="iframe-khan-video" width="320" height="195" src="http://www.youtube.com/embed/GP53b__h4ew" frameborder="0" allowfullscreen></iframe>
   </body>
 </html>
