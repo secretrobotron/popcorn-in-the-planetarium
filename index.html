@@ -4,6 +4,7 @@
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/jquery-ui.js"></script>
     <script type="text/javascript" src="lib/popcorn.js"></script>
+    <script type="text/javascript" src="lib/popcorn.youtube.js"></script>
     <style>
 
       html, body {
@@ -14,7 +15,7 @@
         overflow: hidden;
       }
 
-      #iframe-khan-video {
+      #div-khan-video {
         position: absolute;
         bottom: 0px;
         right: 0px;
@@ -33,7 +34,7 @@
     <script type="text/javascript">
       $(document).ready( function (e) {
         var $iframePlanetarium = $('#iframe-planetarium');
-        var $iframeKhanVideo = $('#iframe-khan-video');
+        var $divKhanVideo = $('#div-khan-video');
         var planets = {};
 
         function planetariumLoaded (event) {
@@ -49,6 +50,9 @@
             } //for
 
           } //if
+
+          var popcorn = Popcorn( Popcorn.youtube('div-khan-video') );
+
         } //planetariumLoaded
 
         window.addEventListener('message', planetariumLoaded, false);
@@ -58,6 +62,6 @@
   </head>
   <body>
     <iframe id="iframe-planetarium" width="100%" height="100%" src="planetarium/demo.html" frameborder="0"></iframe>
-    <iframe id="iframe-khan-video" width="320" height="195" src="http://www.youtube.com/embed/GP53b__h4ew" frameborder="0" allowfullscreen></iframe>
+    <div id="div-khan-video" src="http://www.youtube.com/watch?v=GP53b__h4ew"></div>
   </body>
 </html>
