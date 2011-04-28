@@ -5,6 +5,8 @@
     <script type="text/javascript" src="lib/jquery-ui.js"></script>
     <script type="text/javascript" src="lib/popcorn.js"></script>
     <script type="text/javascript" src="lib/popcorn.youtube.js"></script>
+    <script type="text/javascript" src="lib/popcorn.footnote.js"></script>
+    <script type="text/javascript" src="lib/popcorn.code.js"></script>
     <style>
 
       html, body {
@@ -35,10 +37,10 @@
       $(document).ready( function (e) {
         var $iframePlanetarium = $('#iframe-planetarium');
         var $divKhanVideo = $('#div-khan-video');
-        var planets = {};
 
         function planetariumLoaded (event) {
           if (event.data === 'loaded') {
+            var planets = {};
             var planetariumWin = $iframePlanetarium[0].contentWindow;
             planetariumWin.postMessage('start_demo', '*');
             window.removeEventListener('message', planetariumLoaded, false);
@@ -49,9 +51,66 @@
               planets[li.id] = li;
             } //for
 
-          } //if
+            var popcorn = Popcorn( Popcorn.youtube('div-khan-video') );
 
-          var popcorn = Popcorn( Popcorn.youtube('div-khan-video') );
+            popcorn.code({
+              start: 89,
+              end: 90,
+              onStart: function (options) {
+                $(planets['mercury']).click();
+              },
+            })
+
+            .code({
+              start: 98,
+              end: 99,
+              onStart: function (options) {
+                $(planets['venus']).click();
+              },
+            })
+
+            .code({
+              start: 118,
+              end: 119,
+              onStart: function (options) {
+                $(planets['mars']).click();
+              },
+            })
+
+            .code({
+              start: 121,
+              end: 122,
+              onStart: function (options) {
+                $(planets['jupiter']).click();
+              },
+            })
+
+            .code({
+              start: 160,
+              end: 161,
+              onStart: function (options) {
+                $(planets['saturn']).click();
+              },
+            })
+
+            .code({
+              start: 222,
+              end: 223,
+              onStart: function (options) {
+                $(planets['uranus']).click();
+              },
+            })
+
+            .code({
+              start: 232,
+              end: 232,
+              onStart: function (options) {
+                $(planets['neptune']).click();
+              },
+            })
+
+
+          } //if
 
         } //planetariumLoaded
 
