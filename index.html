@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="text/javascript" src="lib/jquery.js"></script>
+    <script type="text/javascript" src="lib/jquery-ui.js"></script>
+    <script type="text/javascript" src="lib/popcorn.js"></script>
+    <style>
+
+      html, body {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+
+      #iframe-khan-video {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        z-index: 5000;
+        border: 2px solid #fff;
+        border-radius: 15px;
+        opacity: 0.5;
+      }
+
+      #iframe-planetarium {
+        width: 100%;
+        height: 100%;
+      }
+
+    </style>
+    <script type="text/javascript">
+      $(document).ready( function (e) {
+        var $iframePlanetarium = $('#iframe-planetarium');
+        var $iframeKhanVideo = $('#iframe-khan-video');
+      }); //ready block
+    </script>
+  </head>
+  <body>
+    <iframe id="iframe-planetarium" width="100%" height="100%" src="https://mozillademos.org/demos/planetarium/demo.html" frameborder="0"></iframe>
+    <iframe id="iframe-khan-video" width="640" height="390" src="http://www.youtube.com/embed/GP53b__h4ew" frameborder="0" allowfullscreen></iframe>
+  </body>
+</html>
