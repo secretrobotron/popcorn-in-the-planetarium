@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <base target="_blank_planetarium">
+    <link rel="stylesheet" href="lib/jquery-ui.css" text="text/css" />
     <script type="text/javascript" src="lib/jquery.js"></script>
     <script type="text/javascript" src="lib/jquery-ui.js"></script>
     <script type="text/javascript" src="lib/popcorn.js"></script>
@@ -15,6 +17,8 @@
         padding: 0;
         margin: 0;
         overflow: hidden;
+        background: #000;
+        color: #fff;
       }
 
       #div-khan-video {
@@ -22,26 +26,177 @@
         bottom: 0px;
         right: 0px;
         z-index: 5000;
-        border: 2px solid #fff;
-        border-radius: 15px;
-        opacity: 0.5;
+        width: 300px,
+        height: 220px;
       }
 
       #iframe-planetarium {
         width: 100%;
         height: 100%;
+        visibility: hidden;
+      }
+
+      #div-loading {
+        font: 24pt Helvetica;
+        position: absolute;
+        bottom: 5px;
+        left: 5px;
+      }
+
+      img {
+      }
+
+      #img-sun {
+        position: absolute;
+        left: 50%;
+        margin-left: -50%;
+        width: 100%;
+        bottom: -200%;
+        z-index: 4000;
+      }
+
+      #div-bookmarks {
+        position: absolute;
+        width: 300px;
+        z-index: 6000;
+        top: 0px;
+        left: 0px;
+        background: rgba(50, 50, 50, 0.8);
+        min-height: 100%;
+        height 100%;
+        box-shadow: 1px 0px 5px #000;
+        left: -285px;
+      }
+
+      #div-bookmarks-handle {
+        width: 10px;
+        height: 100%;
+        min-height: 100%;
+        background: #668800;
+        background: -moz-linear-gradient(left, #668800, #000);
+        background: -webkit-gradient(linear, left 0.5, right 0.5, color-stop(0.5, #668800), color-stop(1.0, #000));
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        box-shadow: -1px 0px 5px #000;
+        z-index: 1;
+      }
+
+      #div-bookmarks-handle:hover {
+        cursor: pointer;
+        background: #aaee33;
+        background: -moz-linear-gradient(left, #aaee33, #000);
+        background: -webkit-gradient(linear, left 0.5, right 0.5, color-stop(0.5, #aaee33), color-stop(1.0, #000));
+      }
+
+      #span-bookmarks-title {
+        position: absolute;
+        cursor: pointer;
+        -moz-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+        right: -5em;
+        top: 5em;
+        margin: 0;
+        padding: 0;
+      }
+
+      #div-bookmarks-accordion {
+        height: 100%;
+        min-height: 100%;
+        font-size: 90%;
+      }
+
+      .div-accordion-entry {
+        display: none;
+        background: rgba(220, 220, 255, 0.3);
+        color: #fff;
+      }
+
+      #div-bookmarks-accordion h3 {
+        font-size: 120%;
+        background: rgba(255, 255, 255, 0.5);
+        font-weight: bold;
+      }
+
+      #div-bookmarks-accordion h3 a {
+        padding-left: 20px;
+      }
+
+      #div-bookmarks-accordion a {
+        color: #fff;
+      }
+
+      .span-title {
+        font-weight: bold;
+      }
+
+      .p-wiki-quote {
+        margin-left: 1em;
+      }
+
+      .div-wiki-link {
+        width: 100%;
+        text-align: right;
+      }
+
+      .div-wiki-link a {
+        text-decoration: none;
+      }
+
+      .div-wiki-link a:hover {
+        text-decoration: underline;
       }
 
     </style>
     <script type="text/javascript">
 
       $(document).ready( function (e) {
+
+        (function (sunImage) {
+          sunImage.style.opacity = 0;
+          sunImage.onload = function (e) {
+            $(sunImage).animate({
+              opacity: 1,
+            }, 1000);
+          };
+        })(document.getElementById('img-sun'));
+
+
+        var $divBookmarks = $('#div-bookmarks');
+        $('#div-bookmarks-handle').mouseover( function (e) {
+          var w = $divBookmarks.width();
+          function mouseCheck(e) {
+            $(window).unbind( 'mousemove', mouseCheck );
+            $divBookmarks.stop().animate({
+              left: -285,
+            }, 250);
+          }
+
+          $divBookmarks.stop().animate({
+            left: 0,
+          }, 250);
+
+          $divBookmarks.bind('mouseleave', mouseCheck);
+        });
+
+        $('#div-bookmarks-accordion').accordion({
+        });
+
         var $iframePlanetarium = $('#iframe-planetarium');
-        var $divKhanVideo = $('#div-khan-video');
 
         function planetariumLoaded (event) {
 
           if (event.data === 'loaded') {
+
+            function addBookmark ( title, divName ) {
+              $div = $('#'+divName); 
+              $newEntry = $('<h3><a href="#">'+title+'</a></h3>');
+              $div.css('display', 'block');
+              $('#div-bookmarks-accordion').append($newEntry).append($div).accordion('destroy').accordion({});
+            } //addBookmark
+
+            window.removeEventListener('message', planetariumLoaded, false);
 
             var planets = {'space': $iframePlanetarium.contents().find('#back')[0]};
             planets.click = function(planet) {
@@ -59,9 +214,6 @@
             };
 
             var planetariumWin = $iframePlanetarium[0].contentWindow;
-            planetariumWin.postMessage('start_demo', '*');
-
-            window.removeEventListener('message', planetariumLoaded, false);
 
             var $planetLinks = $iframePlanetarium.contents().find('li.planet');
             for (var i=0; i<$planetLinks.length; ++i) {
@@ -70,9 +222,112 @@
             } //for
 
             var popcorn = Popcorn( Popcorn.youtube('div-khan-video',
-                                                   'http://www.youtube.com/watch?v=GP53b__h4ew') );
+                                                   'http://www.youtube.com/watch?v=GP53b__h4ew',
+                                                    {width: 460, height: 350}) );
+
+            $planetariumTitle = $iframePlanetarium.contents().find('#title');
+            $planetariumTitle.hide();
+            $planetariumTitle.css('opacity', 0);
+
+            $('#div-loading').hide();
+
+            var $divKhanVideo = $('#div-khan-video');
+
+            $divKhanVideo.css({bottom: window.innerHeight/2 - $divKhanVideo.height()/2, right: window.innerWidth/2 - $divKhanVideo.width()/2});
 
             popcorn.code({
+              start: 1,
+              end: 10,
+              onStart: function (options) {
+                $('#img-sun').animate({
+                  bottom: 0,
+                }, 10000);
+              }
+            })
+
+            .code({
+              start: 20,
+              end: 21,
+              onStart: function (options) {
+                $iframePlanetarium.css({opacity: 0, visibility: 'visible'})
+                                  .animate({
+                                    opacity: 1,
+                                  }, 2000);
+
+                $('#img-sun').animate({
+                  opacity: 0,
+                }, 2000, function () {
+                  $('#img-sun').hide();
+                });
+              },
+            })
+
+            .code({
+              start: 50,
+              end: 51,
+              onStart: function (options) {
+                $divKhanVideo.animate({
+                  opacity: 0,
+                }, 1000, function () {
+
+                  var obj = $divKhanVideo.children('object')[0];
+                  var aspectRatio = obj.width/obj.height;
+                  obj.width = 300;
+                  obj.height = 300/aspectRatio;
+
+                  $divKhanVideo.css({
+                    width: obj.width,
+                    height: Math.round(obj.height),
+                    bottom: 0,
+                    right: 0,
+                  });
+
+                  $divKhanVideo.animate({
+                    opacity: 0.7,
+                  }, 1000);
+
+                });
+              },
+            })
+
+            .code({
+              start: 52,
+              end: 53,
+              onStart: function (options) {
+                $planetariumTitle.show();
+                $planetariumTitle.animate({
+                  opacity: 1,
+                }, 2000);
+              },
+            })
+
+            .code({
+              start: 60,
+              end: 61,
+              onStart: function (options) {
+                planetariumWin.postMessage('start_demo', '*');
+              },
+              onEnd: function(options) {
+                $planetariumTitle.animate({
+                  opacity: 0,
+                }, 2000, function () {
+                  $planetariumTitle.hide();
+                });
+              }
+            })
+
+            .code({
+              start: 70,
+              end: 80,
+              onStart: function (options) {
+                planets.click('earth');
+              },
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
+            })
+
+            .code({
               start: 89,
               end: 96,
               onStart: function (options) {
@@ -147,6 +402,98 @@
               onEnd: function(options) {
                 planets.zoomOut();
               }
+            })
+
+            .code({
+              start: 265,
+              end: 270,
+              onStart: function (options) {
+                $divKhanVideo.animate({
+                  opacity: 0,
+                }, 1000, function () {
+
+                  var obj = $divKhanVideo.children('object')[0];
+                  obj.width = 460;
+                  obj.height = 350;
+
+                  $divKhanVideo.css({
+                    width: obj.width,
+                    height: obj.height,
+                    bottom: 0,
+                    right: 0,
+                  });
+
+                  $divKhanVideo.animate({
+                    opacity: 0.7,
+                  }, 1000);
+
+                });
+              },
+            })
+
+            .code({
+              start: 166,
+              end: 170,
+              onStart: function (options) {
+                addBookmark('Astronomical Unit', 'div-accordion-entry-au');
+              },
+            })
+
+            .code({
+              start: 270,
+              end: 271,
+              onStart: function (options) {
+                addBookmark('Abraham Lincoln', 'div-accordion-entry-abe');
+              },
+            })
+
+            .code({
+              start: 300,
+              end: 301,
+              onStart: function (options) {
+                addBookmark('Asteroid Belt', 'div-accordion-entry-asteroid-belt');
+              },
+            })
+
+            .code({
+              start: 360,
+              end: 361,
+              onStart: function (options) {
+                addBookmark('Kuiper Belt', 'div-accordion-entry-kuiper');
+              },
+            })
+
+            .code({
+              start: 413,
+              end: 414,
+              onStart: function (options) {
+                addBookmark('Voyager Program', 'div-accordion-entry-voyager');
+              },
+            })
+
+            .code({
+              start: 588,
+              end: 589,
+              onStart: function (options) {
+                addBookmark('Sedna', 'div-accordion-entry-sedna');
+              },
+            })
+
+
+            .code({
+              start: 646,
+              end: 647,
+              onStart: function (options) {
+                addBookmark('Oort Cloud', 'div-accordion-entry-oort');
+              },
+            })
+
+            .code({
+              start: 4,
+              end: 5,
+              onStart: function (options) {
+                addBookmark('The Sun', 'div-accordion-entry-sun');
+              },
             });
 
           } //if
@@ -159,7 +506,87 @@
     </script>
   </head>
   <body>
+    <div id="div-loading">Loading...</div>
     <iframe id="iframe-planetarium" width="100%" height="100%" src="planetarium/demo.html" frameborder="0"></iframe>
     <div id="div-khan-video"></div>
+    <img id="img-sun" src="img/sun.jpg" />
+    <div id="div-bookmarks">
+      <span id="span-bookmarks-title">Points of Interest</span>
+      <div id="div-bookmarks-handle"></div>
+      <div id="div-bookmarks-accordion"></div>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-sun">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          The Sun is the star at the center of the Solar System. It is almost perfectly spherical and consists of hot plasma interwoven with magnetic fields.[10][11] It has a diameter of about 1,392,000 km, about 109 times that of Earth, and its mass (about 2x1030 kilograms, 330,000 times that of Earth) accounts for about 99.86% of the total mass of the Solar System.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Sun">Read More</a></div>
+      </p>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-au">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          An astronomical unit (abbreviated as AU, au or a.u.) is a unit of length equal to about 149,597,870.7 kilometers[1] (92,955,807.27 miles) or approximately the mean Earth-Sun distance.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Astronomical_unit">Read More</a></div>
+      </p>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-abe">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          Abraham Lincoln (February 12, 1809 - April 15, 1865) was the 16th President of the United States, serving from March 1861 until his assassination. He successfully led the country through a great constitutional, military and moral crisis-the American Civil War-preserving the Union while ending slavery and promoting economic modernization.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Abraham_Lincoln">Read More</a></div>
+      </p>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-asteroid-belt">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          The asteroid belt is the region of the Solar System located roughly between the orbits of the planets Mars and Jupiter. It is occupied by numerous irregularly shaped bodies called asteroids or minor planets. The asteroid belt region is also termed the main asteroid belt or main belt because there are other asteroids in the solar system such as near-Earth asteroids and trojan asteroids.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Asteroid_belt">Read More</a></div>
+      </p>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-kuiper">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          The Kuiper belt (/ˈkaɪpər/ rhyming with "viper"),[1] sometimes called the Edgeworth-Kuiper belt, is a region of the Solar System beyond the planets extending from the orbit of Neptune (at 30 AU) to approximately 55 AU from the Sun.[2] It is similar to the asteroid belt, although it is far larger-20 times as wide and 20 to 200 times as massive.[3][4] Like the asteroid belt, it consists mainly of small bodies, or remnants from the Solar System's formation.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Kuiper_belt">Read More</a></div>
+      </p>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-voyager">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          The Voyager program is a series of U.S. unmanned space missions that consists of a pair of unmanned scientific probes, Voyager 1 and Voyager 2. They were launched in 1977 to take advantage of a favorable planetary alignment of the late 1970s. Although they were officially designated to study just Jupiter and Saturn, the two probes were able to continue their mission into the outer solar system. They are currently on course to eventually exit the solar system. These probes were built at JPL and were funded by NASA. Voyager 1 is currently the farthest human-made object from Earth.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Voyager_program">Read More</a></div>
+      </p>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-sedna">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          90377 Sedna is a trans-Neptunian object discovered in 2003, which currently lies about three times as far from the Sun as Neptune. However, its aphelion is estimated to be 960 astronomical units (32 times Neptune's distance) and thus it is, for most of its orbit, one of the most distant known objects in the Solar System after long-period comets.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/90377_Sedna">Read More</a></div>
+      </p>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-entry-oort">
+      <p>
+        <span class="span-title">From Wikipedia:</span>
+        <p class='p-wiki-quote'>
+          The Oort cloud (/ˈɔrt/; alternatively the Öpik-Oort cloud IPA: [ˈøpik]) is a hypothesized spherical cloud of comets which may lie roughly 50,000 AU, or nearly a light-year, from the Sun.[a][1] This places the cloud at nearly a quarter of the distance to Proxima Centauri, the nearest star to the Sun. The Kuiper belt and scattered disc, the other two reservoirs of trans-Neptunian objects, are less than one thousandth the Oort cloud's distance. The outer extent of the Oort cloud defines the gravitational boundary of our Solar System.
+        </p>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Oort_cloud">Read More</a></div>
+      </p>
+    </div>
+
   </body>
 </html>
