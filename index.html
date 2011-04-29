@@ -34,15 +34,33 @@
 
     </style>
     <script type="text/javascript">
+      var planetsObj = {};
       $(document).ready( function (e) {
         var $iframePlanetarium = $('#iframe-planetarium');
         var $divKhanVideo = $('#div-khan-video');
 
         function planetariumLoaded (event) {
+
           if (event.data === 'loaded') {
-            var planets = {};
+
+            var planets = {'space': $iframePlanetarium.contents().find('#back')[0]};
+            planets.click = function(planet) {
+              var p = this[planet];
+              if (!p) {
+                return;
+              }
+
+              var e = document.createEvent('MouseEvents');
+              e.initEvent('click', true, true);
+              p.dispatchEvent(e);
+            };
+            planets.zoomOut = function() {
+              this.click('space');
+            };
+
             var planetariumWin = $iframePlanetarium[0].contentWindow;
             planetariumWin.postMessage('start_demo', '*');
+
             window.removeEventListener('message', planetariumLoaded, false);
 
             var $planetLinks = $iframePlanetarium.contents().find('li.planet');
@@ -51,64 +69,85 @@
               planets[li.id] = li;
             } //for
 
-            var popcorn = Popcorn( Popcorn.youtube('div-khan-video', 'http://www.youtube.com/watch?v=GP53b__h4ew') );
+            var popcorn = Popcorn( Popcorn.youtube('div-khan-video',
+                                                   'http://www.youtube.com/watch?v=GP53b__h4ew') );
 
             popcorn.code({
               start: 89,
-              end: 90,
+              end: 96,
               onStart: function (options) {
-                $(planets['mercury']).click();
+                planets.click('mercury');
               },
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
             })
 
             .code({
               start: 98,
-              end: 99,
+              end: 115,
               onStart: function (options) {
-                $(planets['venus']).click();
+                planets.click('venus');
               },
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
             })
 
             .code({
-              start: 118,
-              end: 119,
+              start: 117,
+              end: 120,
               onStart: function (options) {
-                $(planets['mars']).click();
+                planets.click('mars');
               },
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
             })
 
             .code({
               start: 121,
-              end: 122,
+              end: 157,
               onStart: function (options) {
-                $(planets['jupiter']).click();
+                planets.click('jupiter');
               },
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
             })
 
             .code({
               start: 160,
-              end: 161,
+              end: 218,
               onStart: function (options) {
-                $(planets['saturn']).click();
+                planets.click('saturn');
               },
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
             })
 
             .code({
               start: 222,
-              end: 223,
+              end: 230,
               onStart: function (options) {
-                $(planets['uranus']).click();
+                planets.click('uranus');
               },
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
             })
 
             .code({
               start: 232,
-              end: 232,
+              end: 260,
               onStart: function (options) {
-                $(planets['neptune']).click();
+                planets.click('neptune');
               },
-            })
-
+              onEnd: function(options) {
+                planets.zoomOut();
+              }
+            });
 
           } //if
 
