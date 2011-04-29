@@ -7,7 +7,6 @@
     <script type="text/javascript" src="lib/jquery-ui.js"></script>
     <script type="text/javascript" src="lib/popcorn.js"></script>
     <script type="text/javascript" src="lib/popcorn.youtube.js"></script>
-    <script type="text/javascript" src="lib/popcorn.footnote.js"></script>
     <script type="text/javascript" src="lib/popcorn.code.js"></script>
     <style>
 
@@ -26,8 +25,8 @@
         bottom: 0px;
         right: 0px;
         z-index: 5000;
-        width: 300px,
-        height: 220px;
+        width: 800px,
+        height: 503px;
       }
 
       #iframe-planetarium {
@@ -92,11 +91,9 @@
       #span-bookmarks-title {
         position: absolute;
         cursor: pointer;
-        -moz-transform: rotate(90deg);
-        -webkit-transform: rotate(90deg);
-        transform: rotate(90deg);
-        right: -5em;
-        top: 5em;
+        opacity: .4;
+        right: -2em;
+        top: 2em;
         margin: 0;
         padding: 0;
       }
@@ -190,7 +187,7 @@
           if (event.data === 'loaded') {
 
             function addBookmark ( title, divName ) {
-              $div = $('#'+divName); 
+              $div = $('#'+divName);
               $newEntry = $('<h3><a href="#">'+title+'</a></h3>');
               $div.css('display', 'block');
               $('#div-bookmarks-accordion').append($newEntry).append($div).accordion('destroy').accordion({});
@@ -221,9 +218,11 @@
               planets[li.id] = li;
             } //for
 
+            addBookmark('Introduction', 'div-accordion-about');
+
             var popcorn = Popcorn( Popcorn.youtube('div-khan-video',
                                                    'http://www.youtube.com/watch?v=GP53b__h4ew',
-                                                    {width: 460, height: 350}) );
+                                                    {width: 800, height: 503}) );
 
             $planetariumTitle = $iframePlanetarium.contents().find('#title');
             $planetariumTitle.hide();
@@ -511,9 +510,17 @@
     <div id="div-khan-video"></div>
     <img id="img-sun" src="img/sun.jpg" />
     <div id="div-bookmarks">
-      <span id="span-bookmarks-title">Points of Interest</span>
+      <span id="span-bookmarks-title"><img src="img/info_white.png"></span>
       <div id="div-bookmarks-handle"></div>
       <div id="div-bookmarks-accordion"></div>
+    </div>
+    <div class="div-accordion-entry" id="div-accordion-about">
+      <p>
+        <span class="span-title">Educational Demo Info:</span>
+        <p class='p-wiki-quote'>
+          This demo shows the potential to mix existing web resources using Mozilla's <a href="http://popcornjs.org">Popcorn.js</a> in order to create rich educational resources.  Resources used in this experiment include: <a href="http://www.khanacademy.org/video/scale-of-solar-system?playlist=Cosmology%20and%20Astronomy">Khan Academy</a>, <a href="http://mozillademos.org/demos/planetarium/demo.html">Little WorkShop's Planetarium</a>, and <a href="http://wikipedia.org/">Wikipedia</a>.  Throughout the demo, educational resources and links are added below for further reference.
+        </p>
+      </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-sun">
       <p>
@@ -521,7 +528,7 @@
         <p class='p-wiki-quote'>
           The Sun is the star at the center of the Solar System. It is almost perfectly spherical and consists of hot plasma interwoven with magnetic fields.[10][11] It has a diameter of about 1,392,000 km, about 109 times that of Earth, and its mass (about 2x1030 kilograms, 330,000 times that of Earth) accounts for about 99.86% of the total mass of the Solar System.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Sun">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Sun">Read More...</a></div>
       </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-au">
@@ -530,7 +537,7 @@
         <p class='p-wiki-quote'>
           An astronomical unit (abbreviated as AU, au or a.u.) is a unit of length equal to about 149,597,870.7 kilometers[1] (92,955,807.27 miles) or approximately the mean Earth-Sun distance.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Astronomical_unit">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Astronomical_unit">Read More...</a></div>
       </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-abe">
@@ -539,7 +546,7 @@
         <p class='p-wiki-quote'>
           Abraham Lincoln (February 12, 1809 - April 15, 1865) was the 16th President of the United States, serving from March 1861 until his assassination. He successfully led the country through a great constitutional, military and moral crisis-the American Civil War-preserving the Union while ending slavery and promoting economic modernization.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Abraham_Lincoln">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Abraham_Lincoln">Read More...</a></div>
       </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-asteroid-belt">
@@ -548,7 +555,7 @@
         <p class='p-wiki-quote'>
           The asteroid belt is the region of the Solar System located roughly between the orbits of the planets Mars and Jupiter. It is occupied by numerous irregularly shaped bodies called asteroids or minor planets. The asteroid belt region is also termed the main asteroid belt or main belt because there are other asteroids in the solar system such as near-Earth asteroids and trojan asteroids.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Asteroid_belt">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Asteroid_belt">Read More...</a></div>
       </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-kuiper">
@@ -557,7 +564,7 @@
         <p class='p-wiki-quote'>
           The Kuiper belt (/ˈkaɪpər/ rhyming with "viper"),[1] sometimes called the Edgeworth-Kuiper belt, is a region of the Solar System beyond the planets extending from the orbit of Neptune (at 30 AU) to approximately 55 AU from the Sun.[2] It is similar to the asteroid belt, although it is far larger-20 times as wide and 20 to 200 times as massive.[3][4] Like the asteroid belt, it consists mainly of small bodies, or remnants from the Solar System's formation.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Kuiper_belt">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Kuiper_belt">Read More...</a></div>
       </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-voyager">
@@ -566,7 +573,7 @@
         <p class='p-wiki-quote'>
           The Voyager program is a series of U.S. unmanned space missions that consists of a pair of unmanned scientific probes, Voyager 1 and Voyager 2. They were launched in 1977 to take advantage of a favorable planetary alignment of the late 1970s. Although they were officially designated to study just Jupiter and Saturn, the two probes were able to continue their mission into the outer solar system. They are currently on course to eventually exit the solar system. These probes were built at JPL and were funded by NASA. Voyager 1 is currently the farthest human-made object from Earth.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Voyager_program">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Voyager_program">Read More...</a></div>
       </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-sedna">
@@ -575,7 +582,7 @@
         <p class='p-wiki-quote'>
           90377 Sedna is a trans-Neptunian object discovered in 2003, which currently lies about three times as far from the Sun as Neptune. However, its aphelion is estimated to be 960 astronomical units (32 times Neptune's distance) and thus it is, for most of its orbit, one of the most distant known objects in the Solar System after long-period comets.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/90377_Sedna">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/90377_Sedna">Read More...</a></div>
       </p>
     </div>
     <div class="div-accordion-entry" id="div-accordion-entry-oort">
@@ -584,7 +591,7 @@
         <p class='p-wiki-quote'>
           The Oort cloud (/ˈɔrt/; alternatively the Öpik-Oort cloud IPA: [ˈøpik]) is a hypothesized spherical cloud of comets which may lie roughly 50,000 AU, or nearly a light-year, from the Sun.[a][1] This places the cloud at nearly a quarter of the distance to Proxima Centauri, the nearest star to the Sun. The Kuiper belt and scattered disc, the other two reservoirs of trans-Neptunian objects, are less than one thousandth the Oort cloud's distance. The outer extent of the Oort cloud defines the gravitational boundary of our Solar System.
         </p>
-        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Oort_cloud">Read More</a></div>
+        <div class="div-wiki-link"><a href="http://en.wikipedia.org/wiki/Oort_cloud">Read More...</a></div>
       </p>
     </div>
 
