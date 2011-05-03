@@ -159,9 +159,7 @@
           };
         })(document.getElementById('img-sun'));
 
-
-        var $divBookmarks = $('#div-bookmarks');
-        $('#div-bookmarks-handle').mouseover( function (e) {
+        function slideOpen(e) {
           var w = $divBookmarks.width();
           function mouseCheck(e) {
             $(window).unbind( 'mousemove', mouseCheck );
@@ -175,7 +173,12 @@
           }, 250);
 
           $divBookmarks.bind('mouseleave', mouseCheck);
-        });
+        }
+
+        var $divBookmarks = $('#div-bookmarks');
+        $('#div-bookmarks-handle').mouseover( slideOpen ); //mouseover( slideOpen );
+        $('#info').click( slideOpen );
+
 
         $('#div-bookmarks-accordion').accordion({
         });
@@ -510,7 +513,7 @@
     <div id="div-khan-video"></div>
     <img id="img-sun" src="img/sun.jpg" />
     <div id="div-bookmarks">
-      <span id="span-bookmarks-title"><img src="img/info_white.png"></span>
+      <span id="span-bookmarks-title"><img id="info" src="img/info_white.png"></span>
       <div id="div-bookmarks-handle"></div>
       <div id="div-bookmarks-accordion"></div>
     </div>
